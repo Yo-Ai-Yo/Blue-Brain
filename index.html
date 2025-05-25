@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BlueMind - Exam-Ready Answers</title>
+  <style>
+    /* Global Styles: Blue gradient background for a premium look */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1E90FF, #00BFFF);
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+    }
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 30px;
+    }
+    h1 {
+      text-align: center;
+      font-weight: 300;
+      color: #1E90FF;
+      margin-top: 0;
+    }
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      text-align: center;
+      color: #555;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 500;
+      font-size: 16px;
+      color: #1E90FF;
+    }
+    textarea, input[type="text"], select {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      background-color: #1E90FF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #1C86EE;
+    }
+    .error {
+      color: #e74c3c;
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .answer {
+      background-color: #ecf0f1;
+      border: 1px solid #bdc3c7;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 30px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .conversation {
+      margin-top: 30px;
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+    }
+    .conversation h2 {
+      text-align: center;
+      color: #1E90FF;
+    }
+    .conversation p {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 5px 0;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #fff;
+    }
+    /* Toggle fields styling */
+    #college_fields {
+      display: none;
+    }
+  </style>
+  <script>
+    function toggleFields() {
+      var eduType = document.getElementById("edu_type").value;
+      var schoolFields = document.getElementById("school_fields");
+      var collegeFields = document.getElementById("college_fields");
+      if (eduType === "School") {
+        schoolFields.style.display = "block";
+        collegeFields.style.display = "none";
+      } else {
+        schoolFields.style.display = "none";
+        collegeFields.style.display = "block";
+      }
+    }
+    window.onload = toggleFields;
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>BlueMind</h1>
+    <p>Ask your question or follow up on the given answer. The system remembers the context!</p>
+    
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+    
+    <form method="POST">
+      <label for="question">Question:</label>
+      <textarea id="question" name="question" placeholder="Type your question here..." required></textarea>
+      
+      <label for="edu_type">Education Type:</label>
+      <select id="edu_type" name="edu_type" onchange="toggleFields()">
+        <option value="School">School</option>
+        <option value="College">College</option>
+      </select>
+      
+      <!-- School Fields -->
+      <div id="school_fields">
+        <label for="class_level">Class (1-12):</label>
+        <select id="class_level" name="class_level">
+          {% for i in range(1, 13) %}
+            <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <!-- College Fields -->
+      <div id="college_fields">
+        <label for="semester">Semester (1-8):</label>
+        <select id="semester" name="semester">
+          {% for i in range(1, 9) %}
+            <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <label for="subject">Subject:</label>
+      <input type="text" id="subject" name="subject" placeholder="e.g., Mathematics, Physics, English..." required>
+      
+      <label for="marks">Marks:</label>
+      <select id="marks" name="marks">
+        <option value="2 marks">2 marks</option>
+        <option value="5 marks" selected>5 marks</option>
+        <option value="10 marks">10 marks</option>
+        <option value="15 marks">15 marks</option>
+        <option value="20 marks">20 marks</option>
+      </select>
+      
+      <button type="submit">Get Answer</button>
+    </form>
+    
+    {% if answer %}
+      <div class="answer">
+        <h2>Answer:</h2>
+        <p>{{ answer|safe }}</p>
+      </div>
+    {% endif %}
+    
+    {% if conversation %}
+      <div class="conversation">
+        <h2>Conversation History</h2>
+        {% for line in conversation %}
+          <p>{{ line }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+    
+    <div class="footer">
+      <a href="{{ url_for('reset') }}" style="color: #fff; text-decoration: none;">Reset Conversation</a>
+      <br>&copy; 2025 BlueMind. Elevate your learning.
+    </div>
+  </div>
+</body>
+</html>
